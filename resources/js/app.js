@@ -45,7 +45,7 @@ Vue.component(
 );
 
 Vue.component(
-    'pagination', 
+    'pagination',
     require('laravel-vue-pagination')
 );
 
@@ -71,7 +71,8 @@ let routes = [
     { path: '/dashboard', component: require('./components/Dashboard.vue').default },
     { path: '/profile', component: require('./components/Profile.vue').default },
     { path: '/users', component: require('./components/Users.vue').default },
-    { path: '/developer', component: require('./components/Developer.vue').default }
+    { path: '/developer', component: require('./components/Developer.vue').default },
+    { path: '*', component: require('./components/NotFound.vue').default },
 ]
 
 const router = new VueRouter({
@@ -91,5 +92,13 @@ window.Fire = new Vue();
 
 const app = new Vue({
     el: '#app',
-    router
+    router,
+    data: {
+        search: ''
+    },
+    methods: {
+        searchResult: _.debounce(() => {
+            Fire.$emit('searching');
+        },1000)
+    }
 });

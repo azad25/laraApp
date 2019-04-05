@@ -176,11 +176,10 @@ export default {
 
   methods: {
     getResults(page = 1) {
-			axios.get('api/user?page=' + page)
-				.then(response => {
-					this.users = response.data;
-				});
-		},
+      axios.get("api/user?page=" + page).then(response => {
+        this.users = response.data;
+      });
+    },
     openModal() {
       this.editMode = false;
       this.form.reset();
@@ -270,7 +269,15 @@ export default {
 
   created() {
     this.loadUsers();
+
     Fire.$on("Refresh", () => this.loadUsers());
+
+    Fire.$on("searching", () => {
+      let query = this.$parent.search;
+      axios.get("api/findUser?q=" + query).then(data => {
+        this.users = data.data;
+      });
+    });
   }
 };
 </script>
