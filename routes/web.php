@@ -12,19 +12,13 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
-
-Auth::routes();
-
-Route::get('type', function(){
-    if(Gate::allows('isAdmin')){
-        return "You are allowed type";
+    if(Auth::user()){
+        return redirect('dashboard');
     }else{
-        return "not allowed error";
+        return redirect('auth/login');
     }
 });
 
-Route::get('/home', 'HomeController@index')->name('home');
+Auth::routes();
 
 Route::get('{path}', "HomeController@index")->where( 'path', '([A-z\d-/+\/_.]+)?' );
