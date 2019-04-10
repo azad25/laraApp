@@ -1,4 +1,4 @@
-#Laravel Boilerplace for application Development with vue js and Admin LTE 3 Theme
+# Laravel Boilerplace for application Development with vue js and Admin LTE 3 Theme
 
 Packages Used
 * Axios
@@ -11,7 +11,7 @@ Packages Used
 * Vue-progressbar
 * Laravel Passport for api authentication
 
-##Screenshots
+## Screenshots
 
 ![alt text](https://raw.githubusercontent.com/azad25/laraApp/master/screenshots/1.png)
 
