@@ -13,12 +13,14 @@
 
 Route::get('/', function () {
     if(Auth::user()){
-        return redirect('dashboard');
+        return redirect('/dashboard');
     }else{
-        return redirect('auth/login');
+        return redirect('/login');
     }
 });
 
 Auth::routes();
 
-Route::get('{path}', "HomeController@index")->where( 'path', '([A-z\d-/+\/_.]+)?' );
+Route::get('{path}', function() {
+    return view('layouts.dashboard');
+})->where( 'path', '([A-z\d-/+\/_.]+)?' );
