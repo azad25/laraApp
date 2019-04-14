@@ -1,4 +1,4 @@
-# Laravel Boilerplace for application Development with vue js and Admin LTE 3 Theme
+# Laravel Boilerplate for application Development with vue js and Admin LTE 3 Theme
 
 Packages Used
 * Axios
