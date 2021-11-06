@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -23,7 +23,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        if(Gate::allows('isAdmin') || Gate::allows('isUser')){
+        if (Gate::allows('isAdmin') || Gate::allows('isUser')) {
             return User::latest()->paginate(5);
         }
     }
@@ -47,6 +47,7 @@ class UserController extends Controller
             'type' => $request['type'],
             'bio' => $request['bio'],
             'password' => Hash::make($request['password']),
+            'branch_id' => $request['branch_id'],
         ]);
     }
 
@@ -78,8 +79,8 @@ class UserController extends Controller
             'password' => 'sometimes|required|min:6',
         ]);
 
-        if($request->password !== ''){
-            $request->merge([ 'password' => Hash::make($request['password'])]);
+        if ($request->password !== '') {
+            $request->merge(['password' => Hash::make($request['password'])]);
         }
 
         $user->update($request->all());
@@ -106,8 +107,8 @@ class UserController extends Controller
             'password' => 'sometimes|required|min:6',
         ]);
 
-        if($request->password !== ''){
-            $request->merge([ 'password' => Hash::make($request['password'])]);
+        if ($request->password !== '') {
+            $request->merge(['password' => Hash::make($request['password'])]);
         }
 
         $user->update($request->all());
@@ -132,14 +133,15 @@ class UserController extends Controller
         return ['message' => 'user deleted'];
     }
 
-    public function search(){
-        if($search = \Request::get('q')){
-            $users = User::where(function($query) use ($search){
+    public function search()
+    {
+        if ($search = \Request::get('q')) {
+            $users = User::where(function ($query) use ($search) {
                 $query->where('name', 'LIKE', "%$search%")
-                      ->orWhere('email', 'LIKE', "%$search%")
-                      ->orWhere('type', 'LIKE', "%$search%");
+                    ->orWhere('email', 'LIKE', "%$search%")
+                    ->orWhere('type', 'LIKE', "%$search%");
             })->paginate(20);
-        }else{
+        } else {
             $users = User::latest()->paginate(5);
         }
         return $users;
@@ -153,9 +155,9 @@ class UserController extends Controller
 
             $request->merge(['photo' => $name]);
 
-            $userPhoto = public_path('img/profile/').$user->photo;
+            $userPhoto = public_path('img/profile/') . $user->photo;
 
-            if(file_exists($userPhoto)){
+            if (file_exists($userPhoto)) {
                 @unlink($userPhoto);
             }
 

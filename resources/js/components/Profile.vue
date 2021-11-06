@@ -207,7 +207,7 @@ export default {
     };
   },
   mounted() {
-    console.log("Component mounted.");
+    this.$parent.auth();
   },
 
   created() {

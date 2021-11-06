@@ -9,18 +9,18 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 Route::get('/', function () {
-    if(Auth::user()){
+    if (Auth::user()) {
         return redirect('/dashboard');
-    }else{
+    } else {
         return redirect('/login');
     }
 });
 
 Auth::routes();
 
-Route::get('{path}', function() {
+Route::get('{path}', function () {
     return view('layouts.dashboard');
-})->where( 'path', '([A-z\d-/+\/_.]+)?' );
+})->where('path', '([A-z\d-/+\/_.]+)?');

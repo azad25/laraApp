@@ -37,8 +37,8 @@
                     <a href="#" @click="editModal(user)">
                       <i class="fa fa-edit blue"></i>
                     </a>
-                    /
-                    <a href="#" @click="deleteUser(user.id)">
+                    <span v-if="user.type != 'admin'">/</span>
+                    <a href="#" @click="deleteUser(user.id)" v-if="user.type != 'admin'">
                       <i class="fa fa-trash red"></i>
                     </a>
                   </td>
@@ -87,7 +87,7 @@
                   placeholder="Name"
                   class="form-control"
                   :class="{ 'is-invalid': form.errors.has('name') }"
-                >
+                />
                 <has-error :form="form" field="name"></has-error>
               </div>
 
@@ -99,7 +99,7 @@
                   placeholder="Email Address"
                   class="form-control"
                   :class="{ 'is-invalid': form.errors.has('email') }"
-                >
+                />
                 <has-error :form="form" field="email"></has-error>
               </div>
 
@@ -122,14 +122,34 @@
                   name="type"
                   class="form-control"
                   :class="{ 'is-invalid': form.errors.has('type') }"
+                  v-on:change="checkUser"
                 >
                   <option value>Select user Role</option>
                   <option value="admin">Admin</option>
-                  <option value="user">User</option>
-                  <option value="author">Author</option>
+                  <option value="user">Manager</option>
+                  <option value="counter-man">Counter Man</option>
+                  <option value="accountant">Accountant</option>
                 </select>
                 <has-error :form="form" field="type"></has-error>
               </div>
+
+              <div class="form-group" v-show="showBranches">
+                  <label for>Select Branch</label>
+                  <select
+                    id="branch_id"
+                    v-model="form.branch_id"
+                    name="branch_id"
+                    class="form-control"
+                    :class="{ 'is-invalid': form.errors.has('branch_id') }"
+                  >
+                    <option
+                      v-for="item in branches.data"
+                      v-bind:value="item.id"
+                      :key="item.id"
+                    >{{item.name}}</option>
+                  </select>
+                  <has-error :form="form" field="branch_id"></has-error>
+                </div>
 
               <div class="form-group">
                 <input
@@ -139,7 +159,7 @@
                   placeholder="Password"
                   class="form-control"
                   :class="{ 'is-invalid': form.errors.has('password') }"
-                >
+                />
                 <has-error :form="form" field="password"></has-error>
               </div>
             </div>
@@ -161,13 +181,16 @@ export default {
   data() {
     return {
       editMode: false,
+      showBranches:false,
       users: {},
+      branches:{},
       form: new Form({
         id: "",
         name: "",
         email: "",
         password: "",
         type: "",
+        branch_id:"",
         bio: "",
         photo: ""
       })
@@ -176,12 +199,30 @@ export default {
 
   methods: {
     getResults(page = 1) {
+      this.$Progress.start();
       axios.get("api/user?page=" + page).then(response => {
         this.users = response.data;
+        this.$Progress.finish();
+      });
+    },
+    checkUser(){
+      if(this.form.type == "counter-man"){
+        this.getBranches();
+        this.showBranches = true;
+      }else{
+        this.showBranches = false;
+      }
+    },
+    getBranches() {
+      this.$Progress.start();
+      axios.get("api/branches").then(({ data }) => {
+        this.branches = data.data;
+        this.$Progress.finish();
       });
     },
     openModal() {
       this.editMode = false;
+      this.showBranches = false;
       this.form.reset();
       $("#addNew").modal("show");
     },
@@ -192,8 +233,12 @@ export default {
       this.form.fill(data);
     },
     loadUsers() {
+      this.$Progress.start();
       if (this.$gate.isAdminorUser()) {
-        axios.get("api/user").then(({ data }) => (this.users = data));
+        axios.get("api/user").then(({ data }) => {
+          this.users = data;
+          this.$Progress.finish();
+          });
       }
     },
 
@@ -210,7 +255,7 @@ export default {
             type: "success",
             title: "User created successfully"
           });
-          this.$Progress.fail();
+          this.$Progress.finish();
         })
         .catch(() => this.$Progress.fail());
     },
@@ -267,16 +312,27 @@ export default {
     }
   },
 
-  created() {
+  beforeMount() {
+    this.$parent.auth();
+    this.$Progress.start();
     this.loadUsers();
 
     Fire.$on("Refresh", () => this.loadUsers());
 
     Fire.$on("searching", () => {
+      this.$Progress.start();
       let query = this.$parent.search;
-      axios.get("api/findUser?q=" + query).then(data => {
-        this.users = data.data;
-      });
+      axios
+        .get("api/findUser?q=" + query)
+        .then(data => {
+          this.users = data.data;
+        })
+        .then(() => {
+          this.$Progress.fail();
+        })
+        .catch(() => {
+          this.$Progress.fail();
+        });
     });
   }
 };

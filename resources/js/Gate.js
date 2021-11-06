@@ -16,6 +16,14 @@ export default class Gate{
         return this.user.type === 'author';
     }
 
+    isCounterMan(){
+        return this.user.type === 'counter-man';
+    }
+
+    isAccountant(){
+        return this.user.type === 'accountant';
+    }
+
     isAdminorUser(){
         return this.user.type === 'admin' || this.user.type === 'user';
     }

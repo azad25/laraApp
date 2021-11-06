@@ -2,6 +2,8 @@
 
 @section('content')
 
+@auth
+
 <body class="hold-transition sidebar-mini">
     <div class="wrapper" id="app">
 
@@ -12,24 +14,21 @@
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
                 </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="{{ url('/') }}" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link">Contact</a>
-                </li>
             </ul>
+            <div class="text-center font-weight-bold w-100">
+                <span class="text-primary">{{ date('d M, Y') }}</span>
+                <span id="clock">loading ...</span>
+            </div>
 
             <!-- SEARCH FORM -->
-                <div class="input-group input-group-sm">
-                    <input class="form-control form-control-navbar" @keyup="searchResult" v-model="search" type="search" placeholder="Search"
-                        aria-label="Search">
-                    <div class="input-group-append">
-                        <button class="btn btn-navbar" @click.prevent="searchResult">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
+            <div class="input-group input-group-sm col-3 float-right">
+                <input class="form-control form-control-navbar " @keyup="searchResult" v-model="search" type="search" placeholder="Search" aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-navbar" @click.prevent="searchResult">
+                        <i class="fa fa-search"></i>
+                    </button>
                 </div>
+            </div>
         </nav>
         <!-- /.navbar -->
 
@@ -37,9 +36,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="{{ url('/') }}" class="brand-link">
-                <img src="{{ asset('img/logo.png') }}" alt="LaraStart Logo" class="brand-image img-circle elevation-3"
-                    style="opacity: .8">
-                <span class="brand-text font-weight-light">Lara Start</span>
+                <img src="{{ asset('img/logo.png') }}" alt="LaraStart Logo" class="brand-image" style="opacity: .8">
             </a>
 
             <!-- Sidebar -->
@@ -56,8 +53,7 @@
 
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                         <li class="nav-item">
@@ -68,31 +64,157 @@
                                 </p>
                             </router-link>
                         </li>
-                        <li class="nav-item">
-                            <router-link to="/profile" class="nav-link">
-                                <i class="nav-icon fas fa-user orange"></i>
-                                <p>
-                                    Profile
-                                </p>
-                            </router-link>
-                        </li>
-                        @can('isAdminOrUser')
+                        @can('isAdmin')
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
-                                <i class="nav-icon fa fa-cog green"></i>
+                                <i class="nav-icon fa fa-ship"></i>
                                 <p>
-                                    Management
+                                    Ships
+                                    <i class="right fa fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <router-link to="/ships" class="nav-link">
+                                        <i class="nav-icon fa fa-ship red"></i>
+                                        <p>
+                                            All Ships
+                                        </p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/destinations" class="nav-link">
+                                        <i class="nav-icon fas fa-location-arrow blue"></i>
+                                        <p>
+                                            Destinations
+                                        </p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/schedules" class="nav-link">
+                                        <i class="nav-icon fas fa-clock green"></i>
+                                        <p>
+                                            Schedules
+                                        </p>
+                                    </router-link>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-globe-asia"></i>
+                                <p>
+                                    Counter Settings
+                                    <i class="right fa fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <router-link to="/counters" class="nav-link">
+                                        <i class="nav-icon fas fa-globe-asia red"></i>
+                                        <p>
+                                            Parent Counters
+                                        </p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/branches" class="nav-link">
+                                        <i class="nav-icon fas fa-map-marker-alt blue"></i>
+                                        <p>
+                                            Counter Branches
+                                        </p>
+                                    </router-link>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-folder-open"></i>
+                                <p>
+                                    Seats
+                                    <i class="right fa fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <router-link to="/categories" class="nav-link">
+                                        <i class="nav-icon fas fa-folder-open green"></i>
+                                        <p>
+                                            Seat Cateogories
+                                        </p>
+                                    </router-link>
+                                </li>
+
+                                <li class="nav-item">
+                                    <router-link to="/layouts" class="nav-link">
+                                        <i class="nav-icon fas fa-layer-group blue"></i>
+                                        <p>
+                                            Seat Layouts
+                                        </p>
+                                    </router-link>
+                                </li>
+
+                                <li class="nav-item">
+                                    <router-link to="/seats" class="nav-link">
+                                        <i class="nav-icon fas fa-clipboard-list"></i>
+                                        <p>
+                                            All Seats
+                                        </p>
+                                    </router-link>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-book"></i>
+                                <p>
+                                    Ticket Area
+                                    <i class="right fa fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <router-link to="/tickets" class="nav-link">
+                                        <i class="nav-icon fas fa-file-alt red"></i>
+                                        <p>
+                                            Tickets
+                                        </p>
+                                    </router-link>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-users-cog"></i>
+                                <p>
+                                    Staff
                                     <i class="right fa fa-angle-left"></i>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <router-link to="/users" class="nav-link">
-                                        <i class="fas fa-user nav-icon"></i>
-                                        <p>Users</p>
+                                        <i class="fas fa-user nav-icon blue"></i>
+                                        <p>All Users</p>
                                     </router-link>
                                 </li>
+                            </ul>
+                        </li>
 
+                        @can('isAdmin')
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fa fa-cog"></i>
+                                <p>
+                                    Settings
+                                    <i class="right fa fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <router-link to="/developer" class="nav-link">
                                         <i class="nav-icon fas fa-cogs"></i>
@@ -101,8 +223,19 @@
                                         </p>
                                     </router-link>
                                 </li>
+
+                                <li class="nav-item">
+                                    <router-link to="/profile" class="nav-link">
+                                        <i class="nav-icon fas fa-user orange"></i>
+                                        <p>
+                                            Profile
+                                        </p>
+                                    </router-link>
+                                </li>
                             </ul>
                         </li>
+                        @endcan
+
                         @endcan
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
@@ -143,21 +276,47 @@
         <footer class="main-footer">
             <!-- To the right -->
             <div class="float-right d-none d-sm-inline">
-                Anything you want
+
             </div>
             <!-- Default to the left -->
-            <strong>Copyright &copy; 2014-2018 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights
+            <strong>Copyright &copy; {{ date('Y') }} <a href="/">NSL</a>.</strong> All rights
             reserved.
         </footer>
     </div>
     <!-- ./wrapper -->
+    <script>
+        window.user = @json(auth()->user());
+        var update = function() {
+            document.getElementById("clock")
+                .innerHTML = moment().format('h:mm:ss a');
+        }
+        setInterval(update, 1000);
+        var time = new Date().getTime();
+        $(document.body).bind("mousemove keypress", function(e) {
+            time = new Date().getTime();
+        });
 
-    @auth
-        <script>
-            window.user = @json(auth()->user());
-        </script>
-    @endauth
+        function refresh() {
+            if (new Date().getTime() - time >= 60000)
+                window.location.reload(true);
+            else
+                setTimeout(refresh, 20000);
+        }
+
+        //setTimeout(refresh, 20000);
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 </body>
+
 </html>
+@endauth
+
+@guest
+<script>
+    window.location = "/";
+</script>
+@endguest
 
 @endsection
